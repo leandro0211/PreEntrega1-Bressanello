@@ -12,6 +12,7 @@ const ItemListContainer = (props) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const { id: categoryId } = useParams();
+
     const [products, setProducts] = useState([]);
 
     // const getData = async () => {
@@ -25,20 +26,11 @@ const ItemListContainer = (props) => {
     //   const filteredProducts = categoryId
     // ? products.filter((producto) => producto.categoria === categoryId)
     // : products;
-
+    const productsRef = collection(db, "productos")
     useEffect(() => {
 
-//configuramos la referencia de nuestros productos
-const productsRef = collection(db, "productos")
-// //Utilizamos la funcion getDocs para obtener todos los productos
-// getDocs(productsRef).then((response)=>{
-//   //Formateamos la data a un array de objetos
-//   const productsFirebase = response.docs.map((product)=>(
-//     { id: product.id, ...product.data() }
-//   ))
-  // console.log(productsFirebase)})
+
   
-  // const q = query(productsRef, where("categoria", "==", categoryId)); 
 
   getDocs(productsRef).then((response)=>{
     //Formateamos la data a un array de objetos
@@ -50,6 +42,18 @@ const productsRef = collection(db, "productos")
     console.log(productsData)});
     }, []);
 
+    if(categoryId){
+      const q = query(productsRef, where("categoria", "==", categoryId)); 
+    
+      getDocs(q).then((response)=>{
+        const productsData = response.docs.map((productDoc)=>(
+          { id: productDoc.id, ...productDoc.data() }
+        ))
+        setProducts(productsData);
+        setIsLoading (false);
+    });
+
+    }
 
         return (
             <Layout>
