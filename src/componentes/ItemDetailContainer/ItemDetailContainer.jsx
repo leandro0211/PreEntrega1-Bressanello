@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { productos } from "../../products";
+// import { productos } from "../../products";
 import  Layout  from "../Layout/Layout";
+import { db } from '../../db/db';
+import {doc, getDoc} from 'firebase/firestore';
+
 
 
 const ItemDetailContainer = () => {
@@ -10,16 +13,27 @@ const ItemDetailContainer = () => {
     const [producto, setProduct] = useState([])
     const [isLoading, setIsLoading] = useState(true);
 
-    const searchProduct = productos.find(
-      (prod) => prod.id === parseInt(productId)
-    );
+    // const searchProduct = productos.find(
+    //   (prod) => prod.id === parseInt(productId)
+    // );
     
     useEffect(() => {
-      setTimeout(() => {
-        console.log(searchProduct);
-        setProduct(searchProduct);
-        setIsLoading(false);
-      }, 1000);
+
+//creamos la referencia de nuestro producto
+const productRef = doc(db, "productos", productId)
+//usamos la funcion getDoc para obtener un unico producto
+getDoc(productRef).then((response)=>{
+  //verificamos si el producto con ese id existe
+  if(response.exists()){
+    //si existe le damos el formato correcto
+    const product = { id: response.id, ...response.data() }
+         setProduct(product)
+         setIsLoading(false)
+    // console.log(product)
+  }else{
+    console.log("el producto no existe")
+  }
+})
     }, []);
 
 
@@ -36,6 +50,7 @@ const ItemDetailContainer = () => {
                 <h2>{producto.nombre}</h2>
                 <p>{producto.descripcion}</p>
                 <p>{producto.precio}</p>
+                <img src={producto.image}/>
                 <button>Añadir al Carrito</button>
               </div>
         }

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import  Layout  from "../Layout/Layout";
 import Item  from "../Item/Item";
 import { Link } from "react-router-dom";
+import { db } from '../../db/db';
+import {getDocs, query, collection, where} from 'firebase/firestore';
 
 const ItemListContainer = (props) => {
 
@@ -12,23 +14,40 @@ const ItemListContainer = (props) => {
     const { id: categoryId } = useParams();
     const [products, setProducts] = useState([]);
 
-    const getData = async () => {
-        return await new Promise ((resolve) => {
-          setTimeout(()=> {
-            resolve(productos)
-          },1000)
-      })
-      }
+    // const getData = async () => {
+    //     return await new Promise ((resolve) => {
+    //       setTimeout(()=> {
+    //         resolve(productos)
+    //       },1000)
+    //   })
+    //   }
 
-      const filteredProducts = categoryId
-    ? products.filter((producto) => producto.categoria === categoryId)
-    : products;
+    //   const filteredProducts = categoryId
+    // ? products.filter((producto) => producto.categoria === categoryId)
+    // : products;
 
     useEffect(() => {
-      getData().then((res) => {
-        setProducts(res);
-        setIsLoading(false);
-      });
+
+//configuramos la referencia de nuestros productos
+const productsRef = collection(db, "productos")
+// //Utilizamos la funcion getDocs para obtener todos los productos
+// getDocs(productsRef).then((response)=>{
+//   //Formateamos la data a un array de objetos
+//   const productsFirebase = response.docs.map((product)=>(
+//     { id: product.id, ...product.data() }
+//   ))
+  // console.log(productsFirebase)})
+  
+  // const q = query(productsRef, where("categoria", "==", categoryId)); 
+
+  getDocs(productsRef).then((response)=>{
+    //Formateamos la data a un array de objetos
+    const productsData = response.docs.map((productDoc)=>(
+      { id: productDoc.id, ...productDoc.data() }
+    ))
+    setProducts(productsData);
+    setIsLoading (false);
+    console.log(productsData)});
     }, []);
 
 
@@ -38,13 +57,15 @@ const ItemListContainer = (props) => {
                 {
                 isLoading
                 ? (<div>Cargando...</div>)
-                : (filteredProducts.map((producto) => (
-                <div key={producto.id}>
+                : (products.map((producto) => (
+                <div key={producto.Id}>
                     <Item 
                     id={producto.id}
                     nombre={producto.nombre}
                     descripcion={producto.descripcion}
-                    precio={producto.precio}>
+                    precio={producto.precio}
+                    image={producto.image}>
+                      
                     </Item>
                     <Link to={`/item/${producto.id}`}>Detalles</Link>
                 </div>)))
