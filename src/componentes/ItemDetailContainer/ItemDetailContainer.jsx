@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import  Layout  from "../Layout/Layout";
 import { db } from '../../db/db';
 import {doc, getDoc} from 'firebase/firestore';
+import { useCartContext } from "../CartWidget/CartContext";
 
 
 
@@ -12,6 +13,7 @@ const ItemDetailContainer = () => {
     const {id: productId} = useParams();
     const [producto, setProduct] = useState([])
     const [isLoading, setIsLoading] = useState(true);
+    const { handleAdd, handleRemove, handleClear, cart } = useCartContext();
 
     // const searchProduct = productos.find(
     //   (prod) => prod.id === parseInt(productId)
@@ -51,7 +53,8 @@ getDoc(productRef).then((response)=>{
                 <p>{producto.descripcion}</p>
                 <p>{producto.precio}</p>
                 <img src={producto.image}/>
-                <button>Añadir al Carrito</button>
+                <button onClick={() => handleAdd(producto)}>Añadir al Carrito</button>
+                <button onClick={() => handleRemove(producto.id)}>Remover del Carrito</button>
               </div>
         }
       </div>

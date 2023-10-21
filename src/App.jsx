@@ -104,9 +104,13 @@
 
 import "./App.css";
 import Navigation from "./routes/Navigation";
+ import { CartProvider } from "../src/componentes/CartWidget/CartContext"
 
 function App() {
-  return <Navigation />;
+  return <CartProvider>
+     <Navigation />  
+  </CartProvider>
+  ;
 }
 
 export default App;

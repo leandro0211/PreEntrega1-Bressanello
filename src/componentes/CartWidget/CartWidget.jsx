@@ -1,15 +1,14 @@
 import 'materialize-css';
 import 'material-icons/iconfont/material-icons.css'; 
-// import { useState } from "react";
+import { useCartContext } from "./CartContext";
 
 const CartWidget = () => {
-    const num = 0;
-    // const [num, setNum] = useState(0);
-    // setNum(num + 1);
+    const { cart, clearCart, totalPrice } = useCartContext();
+    
     return (
         <div>
             <i className="material-icons">shopping_cart</i>
-            {num}
+            {cart.length}
         </div>
     )
 }

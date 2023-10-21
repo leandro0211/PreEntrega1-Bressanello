@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ItemListContainer, ItemDetailContainer } from "../componentes"; //barrel de components
+import { ItemListContainer, ItemDetailContainer, Checkout } from "../componentes"; //barrel de components
 
 const Navigation = () => {
     const routes = createBrowserRouter([
@@ -14,6 +14,10 @@ const Navigation = () => {
         {
           path: "/item/:id",
           element: <ItemDetailContainer/>,
+        },
+        {
+          path: "/checkout",
+          element: <Checkout/>,
         },
       ]);
 
